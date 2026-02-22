@@ -54,17 +54,21 @@
 
 ## Screenshots
 
+<div align="center">
+
 **Treemap view** — directories in colour, files in slate-blue, proportional to size.
 
-![Treemap view](docs/images/docs_tree_view.png)
+<img src="docs/images/docs_tree_view.png" width="50%" alt="Treemap view" />
 
 **Table view** — click any column header to sort.
 
-![Table view](docs/images/docs_table_view.png)
+<img src="docs/images/docs_table_view.png" width="50%" alt="Table view" />
 
 **Options dialog** — configure cache age, excluded folders, scan depth, default view, and display limits.
 
-![Options dialog](docs/images/docs_settings_view.png)
+<img src="docs/images/docs_settings_view.png" width="50%" alt="Options dialog" />
+
+</div>
 
 ---
 
