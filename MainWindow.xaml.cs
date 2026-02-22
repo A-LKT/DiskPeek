@@ -40,6 +40,25 @@ public partial class MainWindow : Window
 
     // ── Window chrome controls ────────────────────────────────────────────────
 
+    protected override void OnStateChanged(EventArgs e)
+    {
+        base.OnStateChanged(e);
+        // When maximized, WPF shifts the window off-screen by the resize border thickness
+        // so the invisible resize handles don't eat into the work area.  Compensate by
+        // adding matching padding to the root border so content stays fully visible.
+        if (WindowState == WindowState.Maximized)
+        {
+            var t = SystemParameters.WindowResizeBorderThickness;
+            RootBorder.Padding      = new Thickness(t.Left, t.Top, t.Right, t.Bottom);
+            RootBorder.CornerRadius = new CornerRadius(0);
+        }
+        else
+        {
+            RootBorder.Padding      = new Thickness(0);
+            RootBorder.CornerRadius = new CornerRadius(12);
+        }
+    }
+
     private void MinimizeClick(object sender, RoutedEventArgs e)
         => WindowState = WindowState.Minimized;
 

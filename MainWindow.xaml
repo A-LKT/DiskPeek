@@ -24,7 +24,7 @@
     </WindowChrome.WindowChrome>
 
     <!-- Root border clips children to rounded rect -->
-    <Border CornerRadius="12" ClipToBounds="True">
+    <Border x:Name="RootBorder" CornerRadius="12" ClipToBounds="True">
 
         <Grid>
             <Grid.RowDefinitions>
