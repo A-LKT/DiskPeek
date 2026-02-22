@@ -7,438 +7,471 @@
         Icon="app.ico"
         Width="1280" Height="820"
         MinWidth="800" MinHeight="560"
-        Background="{StaticResource BgBrush}"
-        Foreground="{StaticResource TextBrush}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="{StaticResource BackgroundBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
         FontFamily="Segoe UI"
         FontSize="13"
         TextOptions.TextFormattingMode="Display"
         RenderOptions.BitmapScalingMode="HighQuality"
         WindowStartupLocation="CenterScreen">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <!-- Thin loading bar -->
-            <RowDefinition Height="3"/>
-            <!-- Toolbar -->
-            <RowDefinition Height="52"/>
-            <!-- Stale cache warning (auto-collapsed) -->
-            <RowDefinition Height="Auto"/>
-            <!-- Breadcrumb -->
-            <RowDefinition Height="38"/>
-            <!-- Content -->
-            <RowDefinition Height="*"/>
-            <!-- Status bar -->
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="48" ResizeBorderThickness="6"
+                      GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
 
-        <!-- ══════════════════ 0: SCANNING PROGRESS BAR ══════════════════════ -->
-        <ProgressBar Grid.Row="0"
-                     IsIndeterminate="True"
-                     Background="{StaticResource SurfaceBrush}"
-                     Foreground="{StaticResource AccentBrush}"
-                     BorderThickness="0"
-                     Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"/>
-        <Border Grid.Row="0"
-                Background="{StaticResource SurfaceBrush}"
-                Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility},
-                             ConverterParameter=invert}"/>
+    <!-- Root border clips children to rounded rect -->
+    <Border CornerRadius="12" ClipToBounds="True">
 
-        <!-- ══════════════════════ 1: TOOLBAR ════════════════════════════════ -->
-        <Border Grid.Row="1"
-                Background="{StaticResource SurfaceBrush}"
-                BorderBrush="{StaticResource BorderBrush_}"
-                BorderThickness="0,0,0,1">
-            <DockPanel Margin="14,0" LastChildFill="False">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- Thin scanning progress bar -->
+                <RowDefinition Height="3"/>
+                <!-- Title bar / toolbar -->
+                <RowDefinition Height="48"/>
+                <!-- Stale cache warning (auto-collapsed) -->
+                <RowDefinition Height="Auto"/>
+                <!-- Breadcrumb -->
+                <RowDefinition Height="38"/>
+                <!-- Content -->
+                <RowDefinition Height="*"/>
+                <!-- Status bar -->
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-                <!-- Left: Drive + scan actions -->
-                <StackPanel DockPanel.Dock="Left"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
+            <!-- ══════════════════ 0: SCANNING PROGRESS BAR ══════════════════ -->
+            <ProgressBar Grid.Row="0"
+                         IsIndeterminate="True"
+                         Background="{StaticResource SurfaceBrush}"
+                         Foreground="{StaticResource AccentBrush}"
+                         BorderThickness="0"
+                         Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"/>
+            <Border Grid.Row="0"
+                    Background="{StaticResource SurfaceBrush}"
+                    Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility},
+                                 ConverterParameter=invert}"/>
 
-                    <!-- App title / logo -->
-                    <TextBlock Text="DiskPeek"
-                               FontSize="17" FontWeight="Bold"
-                               Foreground="{StaticResource AccentBrush}"
-                               VerticalAlignment="Center"
-                               Margin="0,0,16,0"/>
+            <!-- ══════════════════════ 1: TITLE BAR / TOOLBAR ════════════════ -->
+            <Border Grid.Row="1"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <DockPanel Margin="16,0,0,0" LastChildFill="False">
 
-                    <!-- Drive selector -->
-                    <ComboBox x:Name="DriveCombo"
-                              Style="{StaticResource ModernComboBox}"
-                              ItemsSource="{Binding AvailableDrives}"
-                              SelectedItem="{Binding SelectedDrive}"
-                              MinWidth="260"
-                              VerticalAlignment="Center"
-                              Margin="0,0,8,0">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource DriveInfoConverter}}"
-                                           Foreground="{StaticResource TextBrush}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    <!-- Right: window controls (must be hit-test visible in caption) -->
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="0,0,4,0"
+                                WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button Style="{StaticResource IconButton}"
+                                Content="⚙"
+                                Command="{Binding OptionsCommand}"
+                                ToolTip="Options"
+                                Width="32" Height="32"/>
+                        <Rectangle Width="1" Height="18"
+                                   Fill="{StaticResource BorderBrush}"
+                                   Margin="6,0" VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource IconButton}"
+                                Content="─"
+                                Click="MinimizeClick"
+                                Width="32" Height="32"/>
+                        <Button Style="{StaticResource IconButton}"
+                                Content="□"
+                                Click="MaximizeClick"
+                                Width="32" Height="32"/>
+                        <Button Style="{StaticResource IconButton}"
+                                Content="✕"
+                                Click="CloseClick"
+                                Width="32" Height="32"
+                                Foreground="{StaticResource DangerBrush}"/>
+                    </StackPanel>
 
-                    <!-- Scan -->
-                    <Button Content="Scan"
-                            Style="{StaticResource AccentButton}"
-                            Command="{Binding ScanCommand}"
-                            VerticalAlignment="Center"
-                            Margin="0,0,6,0"/>
+                    <!-- Left: app identity + functional toolbar controls -->
+                    <StackPanel DockPanel.Dock="Left"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                WindowChrome.IsHitTestVisibleInChrome="True">
 
-                    <!-- Rescan (force) -->
-                    <Button Content="↺  Rescan"
+                        <!-- App logo -->
+                        <Ellipse Width="10" Height="10"
+                                 Fill="{StaticResource AccentBrush}"
+                                 Margin="0,0,8,0"/>
+                        <TextBlock Text="DiskPeek"
+                                   FontSize="16" FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,16,0"/>
+
+                        <!-- Divider -->
+                        <Rectangle Width="1" Height="18"
+                                   Fill="{StaticResource BorderBrush}"
+                                   Margin="0,0,16,0" VerticalAlignment="Center"/>
+
+                        <!-- Drive selector -->
+                        <ComboBox x:Name="DriveCombo"
+                                  Style="{StaticResource ModernComboBox}"
+                                  ItemsSource="{Binding AvailableDrives}"
+                                  SelectedItem="{Binding SelectedDrive}"
+                                  MinWidth="260"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,8,0">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource DriveInfoConverter}}"
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!-- Scan -->
+                        <Button Content="Scan"
+                                Style="{StaticResource AccentButton}"
+                                Command="{Binding ScanCommand}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,6,0"/>
+
+                        <!-- Rescan (force) -->
+                        <Button Content="↺  Rescan"
+                                Style="{StaticResource WarnButton}"
+                                Command="{Binding RescanCommand}"
+                                ToolTip="Delete cache and re-scan from disk"
+                                VerticalAlignment="Center"
+                                Margin="0,0,6,0"/>
+
+                        <!-- Cancel -->
+                        <Button Content="✕"
+                                Style="{StaticResource GhostButton}"
+                                Command="{Binding CancelCommand}"
+                                ToolTip="Cancel scan"
+                                Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,8,0"/>
+
+                        <!-- Scanning status text -->
+                        <TextBlock Text="{Binding ScanStatus}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"
+                                   MaxWidth="300"
+                                   TextTrimming="CharacterEllipsis"/>
+
+                    </StackPanel>
+
+                    <!-- Center: view toggle tabs -->
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Stretch"
+                                WindowChrome.IsHitTestVisibleInChrome="True">
+                        <ToggleButton Content="⬛  Treemap"
+                                      Style="{StaticResource ViewTab}"
+                                      IsChecked="{Binding IsTreemapView, Mode=OneWay}"
+                                      Click="TreemapTabClick"/>
+                        <ToggleButton Content="☰  Table"
+                                      Style="{StaticResource ViewTab}"
+                                      IsChecked="{Binding IsTableView, Mode=OneWay}"
+                                      Click="TableTabClick"/>
+                    </StackPanel>
+
+                </DockPanel>
+            </Border>
+
+            <!-- ════════════════════ 2: STALE CACHE WARNING ═══════════════════ -->
+            <Border Grid.Row="2"
+                    Background="#1A1200"
+                    BorderBrush="#5A3800"
+                    BorderThickness="0,0,0,1"
+                    Padding="14,8"
+                    Visibility="{Binding IsCacheStale, Converter={StaticResource BoolToVisibility}}">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Content="✕"
+                            Style="{StaticResource GhostButton}"
+                            Command="{Binding DismissStaleWarningCommand}"
+                            Foreground="#F5A623"
+                            Padding="8,4"
+                            ToolTip="Dismiss warning"/>
+                    <Button DockPanel.Dock="Right"
+                            Content="↺  Rescan"
                             Style="{StaticResource WarnButton}"
                             Command="{Binding RescanCommand}"
-                            ToolTip="Delete cache and re-scan from disk"
-                            VerticalAlignment="Center"
-                            Margin="0,0,6,0"/>
+                            Margin="0,0,4,0"
+                            Padding="12,4"/>
+                    <TextBlock Text="{Binding CacheStaleMessage}"
+                               Foreground="#F5A623"
+                               FontSize="12"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
 
-                    <!-- Cancel -->
-                    <Button Content="✕"
+            <!-- ════════════════════ 3: BREADCRUMB BAR ════════════════════════ -->
+            <Border Grid.Row="3"
+                    Background="{StaticResource BackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Up button -->
+                    <Button Grid.Column="0"
+                            Content="↑"
                             Style="{StaticResource GhostButton}"
-                            Command="{Binding CancelCommand}"
-                            ToolTip="Cancel scan"
-                            Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding NavigateUpCommand}"
+                            ToolTip="Go up one level"
+                            FontSize="15"
+                            Padding="8,4"
                             VerticalAlignment="Center"
-                            Margin="0,0,8,0"/>
+                            Margin="0,0,4,0"/>
 
-                    <!-- Scanning status text -->
-                    <TextBlock Text="{Binding ScanStatus}"
-                               Foreground="{StaticResource TextMutedBrush}"
+                    <!-- Breadcrumb path -->
+                    <ItemsControl Grid.Column="1"
+                                  ItemsSource="{Binding Breadcrumbs}"
+                                  AlternationCount="999"
+                                  VerticalAlignment="Center">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:BreadcrumbItem}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- Separator (hidden for first item) -->
+                                    <TextBlock Text=" ›  "
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="14"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding IsFirst,
+                                                   Converter={StaticResource BoolToVisibility},
+                                                   ConverterParameter=invert}"/>
+                                    <!-- Clickable breadcrumb segment -->
+                                    <Button Content="{Binding DisplayName}"
+                                            Style="{StaticResource BreadcrumbBtn}"
+                                            Command="{Binding DataContext.DrillDownCommand,
+                                                      RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding Node}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Cache info (right) -->
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding CacheInfo}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Margin="8,0,4,0"/>
+                </Grid>
+            </Border>
+
+            <!-- ════════════════════ 4: CONTENT AREA ══════════════════════════ -->
+            <Grid Grid.Row="4">
+
+                <!-- ── Treemap view ── -->
+                <ctrl:TreemapControl x:Name="Treemap"
+                                     RootNode="{Binding CurrentNode}"
+                                     MaxChildren="{Binding MaxChildrenDisplay}"
+                                     Visibility="{Binding IsTreemapView,
+                                                  Converter={StaticResource BoolToVisibility}}"/>
+
+                <!-- ── No-data placeholder (treemap) ── -->
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding CurrentNode}" Value="{x:Null}"/>
+                                        <Condition Binding="{Binding IsTreemapView}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Ellipse Width="80" Height="80"
+                             Fill="{StaticResource AccentBrush}"
+                             HorizontalAlignment="Center"
+                             Margin="0,0,0,24"/>
+                    <TextBlock Text="Select a drive and click Scan"
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,10"/>
+                    <TextBlock Text="Results are cached — subsequent opens are instant."
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- ── Table view ── -->
+                <DataGrid x:Name="FileTable"
+                          ItemsSource="{Binding ChildrenView}"
+                          IsReadOnly="True"
+                          Visibility="{Binding IsTableView,
+                                       Converter={StaticResource BoolToVisibility}}"
+                          MouseDoubleClick="Table_MouseDoubleClick"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <DataGrid.Columns>
+
+                        <!-- Type icon -->
+                        <DataGridTemplateColumn Width="40" CanUserSort="False" CanUserResize="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding IsDirectory, Converter={StaticResource TypeIconConverter}}"
+                                               Foreground="{Binding IsDirectory, Converter={StaticResource TypeColorConverter}}"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="15"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Name -->
+                        <DataGridTextColumn Header="Name"
+                                            Binding="{Binding Name}"
+                                            Width="*"
+                                            SortMemberPath="Name">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Padding"           Value="10,0,4,0"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextTrimming"      Value="CharacterEllipsis"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Size -->
+                        <DataGridTextColumn Header="Size"
+                                            Binding="{Binding Size, Converter={StaticResource FileSizeConverter}}"
+                                            Width="110"
+                                            SortMemberPath="Size">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Padding"            Value="10,0"/>
+                                    <Setter Property="VerticalAlignment"  Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Items count -->
+                        <DataGridTemplateColumn Header="Items"
+                                                Width="80"
+                                                SortMemberPath="FileCount">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="10,0"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Right"
+                                               Foreground="{StaticResource TextSecondaryBrush}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="—"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDirectory}" Value="True">
+                                                        <Setter Property="Text"
+                                                                Value="{Binding FileCount, StringFormat=N0}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- % of parent (with bar) -->
+                        <DataGridTemplateColumn Header="% of parent"
+                                                Width="120"
+                                                SortMemberPath="PercentOfParent">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="10,0">
+                                        <!-- Track -->
+                                        <Rectangle x:Name="PctTrack"
+                                                   Fill="{StaticResource CardBrush}"
+                                                   Height="6" VerticalAlignment="Center"
+                                                   HorizontalAlignment="Stretch"
+                                                   RadiusX="3" RadiusY="3"/>
+                                        <!-- Fill -->
+                                        <Rectangle HorizontalAlignment="Left"
+                                                   Height="6" VerticalAlignment="Center"
+                                                   RadiusX="3" RadiusY="3">
+                                            <Rectangle.Width>
+                                                <MultiBinding Converter="{StaticResource PercentToWidth}">
+                                                    <Binding Path="PercentOfParent"/>
+                                                    <Binding ElementName="PctTrack" Path="ActualWidth"/>
+                                                </MultiBinding>
+                                            </Rectangle.Width>
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="#7C6FF7" Offset="0"/>
+                                                    <GradientStop Color="#9D97F9" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <!-- Percent text -->
+                                        <TextBlock Text="{Binding PercentOfParent, StringFormat={}{0:F1}%}"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   FontSize="11"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+            <!-- ════════════════════ 5: STATUS BAR ═══════════════════════════ -->
+            <Border Grid.Row="5"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,1,0,0"
+                    Padding="16,6">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right"
+                               Text="{x:Static vm:MainViewModel.AppVersion}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Opacity="0.55"
+                               Margin="12,0,0,0"/>
+
+                    <TextBlock DockPanel.Dock="Right"
+                               Text="{Binding ScanStatus}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
                                FontSize="12"
                                VerticalAlignment="Center"
                                Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"
-                               MaxWidth="300"
-                               TextTrimming="CharacterEllipsis"/>
-                </StackPanel>
+                               TextTrimming="CharacterEllipsis"
+                               MaxWidth="500"/>
 
-                <!-- Right: Options gear + View toggle tabs -->
-                <StackPanel DockPanel.Dock="Right"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Stretch">
-                    <Button Content="⚙"
-                            Style="{StaticResource GhostButton}"
-                            Command="{Binding OptionsCommand}"
-                            ToolTip="Options"
-                            FontSize="16"
-                            Padding="10,6"
-                            VerticalAlignment="Center"
-                            Margin="0,0,4,0"/>
-                    <ToggleButton Content="⬛  Treemap"
-                                  Style="{StaticResource ViewTab}"
-                                  IsChecked="{Binding IsTreemapView, Mode=OneWay}"
-                                  Click="TreemapTabClick"/>
-                    <ToggleButton Content="☰  Table"
-                                  Style="{StaticResource ViewTab}"
-                                  IsChecked="{Binding IsTableView, Mode=OneWay}"
-                                  Click="TableTabClick"/>
-                </StackPanel>
-
-            </DockPanel>
-        </Border>
-
-        <!-- ════════════════════ 2: STALE CACHE WARNING ══════════════════════ -->
-        <Border Grid.Row="2"
-                Background="#1A1200"
-                BorderBrush="#5A3800"
-                BorderThickness="0,0,0,1"
-                Padding="14,8"
-                Visibility="{Binding IsCacheStale, Converter={StaticResource BoolToVisibility}}">
-            <DockPanel>
-                <Button DockPanel.Dock="Right"
-                        Content="✕"
-                        Style="{StaticResource GhostButton}"
-                        Command="{Binding DismissStaleWarningCommand}"
-                        Foreground="#F5A623"
-                        Padding="8,4"
-                        ToolTip="Dismiss warning"/>
-                <Button DockPanel.Dock="Right"
-                        Content="↺  Rescan"
-                        Style="{StaticResource WarnButton}"
-                        Command="{Binding RescanCommand}"
-                        Margin="0,0,4,0"
-                        Padding="12,4"/>
-                <TextBlock Text="{Binding CacheStaleMessage}"
-                           Foreground="#F5A623"
-                           FontSize="12"
-                           VerticalAlignment="Center"/>
-            </DockPanel>
-        </Border>
-
-        <!-- ════════════════════ 3: BREADCRUMB BAR ═══════════════════════════ -->
-        <Border Grid.Row="3"
-                Background="{StaticResource BgBrush}"
-                BorderBrush="{StaticResource BorderBrush_}"
-                BorderThickness="0,0,0,1">
-            <Grid Margin="10,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Up button -->
-                <Button Grid.Column="0"
-                        Content="↑"
-                        Style="{StaticResource GhostButton}"
-                        Command="{Binding NavigateUpCommand}"
-                        ToolTip="Go up one level"
-                        FontSize="15"
-                        Padding="8,4"
-                        VerticalAlignment="Center"
-                        Margin="0,0,4,0"/>
-
-                <!-- Breadcrumb path -->
-                <ItemsControl Grid.Column="1"
-                              ItemsSource="{Binding Breadcrumbs}"
-                              AlternationCount="999"
-                              VerticalAlignment="Center">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vm:BreadcrumbItem}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <!-- Separator (hidden for first item) -->
-                                <TextBlock Text=" ›  "
-                                           Foreground="{StaticResource TextMutedBrush}"
-                                           FontSize="14"
-                                           VerticalAlignment="Center"
-                                           Visibility="{Binding IsFirst,
-                                               Converter={StaticResource BoolToVisibility},
-                                               ConverterParameter=invert}"/>
-                                <!-- Clickable breadcrumb segment -->
-                                <Button Content="{Binding DisplayName}"
-                                        Style="{StaticResource BreadcrumbBtn}"
-                                        Command="{Binding DataContext.DrillDownCommand,
-                                                  RelativeSource={RelativeSource AncestorType=Window}}"
-                                        CommandParameter="{Binding Node}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <!-- Cache info (right) -->
-                <TextBlock Grid.Column="2"
-                           Text="{Binding CacheInfo}"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           FontSize="11"
-                           VerticalAlignment="Center"
-                           Margin="8,0,4,0"/>
-            </Grid>
-        </Border>
-
-        <!-- ════════════════════ 4: CONTENT AREA ═════════════════════════════ -->
-        <Grid Grid.Row="4">
-
-            <!-- ── Treemap view ── -->
-            <ctrl:TreemapControl x:Name="Treemap"
-                                 RootNode="{Binding CurrentNode}"
-                                 MaxChildren="{Binding MaxChildrenDisplay}"
-                                 Visibility="{Binding IsTreemapView,
-                                              Converter={StaticResource BoolToVisibility}}"/>
-
-            <!-- ── No-data placeholder (treemap) ── -->
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding CurrentNode}" Value="{x:Null}"/>
-                                    <Condition Binding="{Binding IsTreemapView}" Value="True"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-                <TextBlock Text="💾" FontSize="64" HorizontalAlignment="Center" Margin="0,0,0,16"/>
-                <TextBlock Text="Select a drive and click Scan"
-                           FontSize="20" Foreground="{StaticResource TextMutedBrush}"
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="Results are cached — subsequent opens are instant."
-                           FontSize="13" Foreground="{StaticResource TextMutedBrush}"
-                           HorizontalAlignment="Center" Margin="0,8,0,0"/>
-            </StackPanel>
-
-            <!-- ── Table view ── -->
-            <DataGrid x:Name="FileTable"
-                      ItemsSource="{Binding ChildrenView}"
-                      IsReadOnly="True"
-                      Visibility="{Binding IsTableView,
-                                   Converter={StaticResource BoolToVisibility}}"
-                      MouseDoubleClick="Table_MouseDoubleClick"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-                <DataGrid.Columns>
-
-                    <!-- Type icon -->
-                    <DataGridTemplateColumn Width="40" CanUserSort="False" CanUserResize="False">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding IsDirectory, Converter={StaticResource TypeIconConverter}}"
-                                           Foreground="{Binding IsDirectory, Converter={StaticResource TypeColorConverter}}"
-                                           FontFamily="Segoe MDL2 Assets"
-                                           FontSize="15"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- Name -->
-                    <DataGridTextColumn Header="Name"
-                                        Binding="{Binding Name}"
-                                        Width="*"
-                                        SortMemberPath="Name">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Padding"           Value="10,0,4,0"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="TextTrimming"      Value="CharacterEllipsis"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <!-- Size -->
-                    <DataGridTextColumn Header="Size"
-                                        Binding="{Binding Size, Converter={StaticResource FileSizeConverter}}"
-                                        Width="110"
-                                        SortMemberPath="Size">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Padding"            Value="10,0"/>
-                                <Setter Property="VerticalAlignment"  Value="Center"/>
-                                <Setter Property="HorizontalAlignment" Value="Right"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <!-- Items count -->
-                    <DataGridTemplateColumn Header="Items"
-                                            Width="80"
-                                            SortMemberPath="FileCount">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Margin="10,0"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Right"
-                                           Foreground="{StaticResource TextMutedBrush}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="—"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsDirectory}" Value="True">
-                                                    <Setter Property="Text"
-                                                            Value="{Binding FileCount, StringFormat=N0}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- % of parent (with bar) -->
-                    <DataGridTemplateColumn Header="% of parent"
-                                            Width="120"
-                                            SortMemberPath="PercentOfParent">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid Margin="10,0">
-                                    <!-- Track -->
-                                    <Rectangle x:Name="PctTrack"
-                                               Fill="{StaticResource Surface2Brush}"
-                                               Height="6" VerticalAlignment="Center"
-                                               HorizontalAlignment="Stretch"
-                                               RadiusX="3" RadiusY="3"/>
-                                    <!-- Fill -->
-                                    <Rectangle HorizontalAlignment="Left"
-                                               Height="6" VerticalAlignment="Center"
-                                               RadiusX="3" RadiusY="3">
-                                        <Rectangle.Width>
-                                            <MultiBinding Converter="{StaticResource PercentToWidth}">
-                                                <Binding Path="PercentOfParent"/>
-                                                <Binding ElementName="PctTrack" Path="ActualWidth"/>
-                                            </MultiBinding>
-                                        </Rectangle.Width>
-                                        <Rectangle.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                <GradientStop Color="#4E9AF0" Offset="0"/>
-                                                <GradientStop Color="#7BC0FF" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <!-- Percent text -->
-                                    <TextBlock Text="{Binding PercentOfParent, StringFormat={}{0:F1}%}"
-                                               HorizontalAlignment="Right"
-                                               VerticalAlignment="Center"
-                                               Foreground="{StaticResource TextMutedBrush}"
-                                               FontSize="11"/>
-                                </Grid>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                    <!-- Open in Explorer -->
-                    <DataGridTemplateColumn Width="34" CanUserSort="False" CanUserResize="False">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="↗"
-                                        FontSize="14"
-                                        Padding="6,2"
-                                        VerticalAlignment="Center"
-                                        ToolTip="Open in Explorer"
-                                        Command="{Binding DataContext.OpenInExplorerCommand,
-                                                  RelativeSource={RelativeSource AncestorType=Window}}"
-                                        CommandParameter="{Binding}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-
-                </DataGrid.Columns>
-
-            </DataGrid>
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="{Binding StatusText}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
 
         </Grid>
 
-        <!-- ════════════════════ 5: STATUS BAR ══════════════════════════════ -->
-        <Border Grid.Row="5"
-                Background="{StaticResource SurfaceBrush}"
-                BorderBrush="{StaticResource BorderBrush_}"
-                BorderThickness="0,1,0,0">
-            <DockPanel Margin="14,0">
-                <TextBlock DockPanel.Dock="Left"
-                           Text="{Binding StatusText}"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           FontSize="12"
-                           VerticalAlignment="Center"/>
-
-                <TextBlock DockPanel.Dock="Right"
-                           Text="{x:Static vm:MainViewModel.AppVersion}"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           FontSize="11"
-                           VerticalAlignment="Center"
-                           Opacity="0.55"
-                           Margin="12,0,0,0"/>
-
-                <TextBlock DockPanel.Dock="Right"
-                           Text="{Binding ScanStatus}"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           FontSize="12"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"
-                           TextTrimming="CharacterEllipsis"
-                           MaxWidth="500"/>
-            </DockPanel>
-        </Border>
-
-    </Grid>
+    </Border>
 </Window>

@@ -38,6 +38,19 @@ public partial class MainWindow : Window
         Loaded += (_, _) => RestoreColumnWidths();
     }
 
+    // ── Window chrome controls ────────────────────────────────────────────────
+
+    private void MinimizeClick(object sender, RoutedEventArgs e)
+        => WindowState = WindowState.Minimized;
+
+    private void MaximizeClick(object sender, RoutedEventArgs e)
+        => WindowState = WindowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
+
+    private void CloseClick(object sender, RoutedEventArgs e)
+        => Close();
+
     // ── View tab toggles ──────────────────────────────────────────────────────
 
     private void TreemapTabClick(object sender, RoutedEventArgs e)

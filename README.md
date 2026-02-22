@@ -1,11 +1,13 @@
-# DiskPeek
+<div align="center">
+  <img src="app-icon.png" width="96" alt="DiskPeek icon" />
+  <h1>DiskPeek</h1>
+  <p>A lightweight, native Windows application for visualising disk space usage. Select a drive, run a scan, and instantly see where your storage is going — with an interactive treemap and a sortable table view.</p>
 
-A lightweight, native Windows application for visualising disk space usage. Select a drive, run a scan, and instantly see where your storage is going — with an interactive treemap and a sortable table view.
-
-![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
-![Framework](https://img.shields.io/badge/.NET-8.0-purple)
-![UI](https://img.shields.io/badge/UI-WPF-teal)
-![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+  ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
+  ![Framework](https://img.shields.io/badge/.NET-8.0-purple)
+  ![UI](https://img.shields.io/badge/UI-WPF-teal)
+  ![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+</div>
 
 ---
 
@@ -52,38 +54,17 @@ A lightweight, native Windows application for visualising disk space usage. Sele
 
 ## Screenshots
 
-> **Treemap view** — directories in colour, files in slate-blue, proportional to size.
+**Treemap view** — directories in colour, files in slate-blue, proportional to size.
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ DiskPeek   [C: [Windows]  ·  120.4 GB free / 476.9 GB]  [Scan]  [⚙]   │
-├─────────────────────────────────────────────────────────────────────────┤
-│ ↑  C:\  ›  Users  ›  Admin                          Cached 2 min ago   │
-├──────────────────────┬──────────────────┬───────────────────────────────┤
-│                      │                  │  pagefile.sys                 │
-│   Windows            │   Users          │  12.0 GB                      │
-│   24.3 GB            │   18.7 GB        ├───────────────────────────────┤
-│                      │                  │  hiberfil.sys  4.2 GB         │
-├──────────────────────┴─────────┬─────────┴───────────────────────────── │
-│  Program Files                 │  Program Files (x86)                   │
-│  9.1 GB                        │  3.4 GB                                │
-└────────────────────────────────┴────────────────────────────────────────┘
-```
+![Treemap view](docs/images/docs_tree_view.png)
 
-> **Table view** — click any column header to sort.
+**Table view** — click any column header to sort.
 
-```
-┌────┬──────────────────────────┬───────────────┬───────┬──────────────────┐
-│    │ Name                     │ Size          │ Items │ % of parent      │
-├────┼──────────────────────────┼───────────────┼───────┼──────────────────┤
-│ 📁 │ Windows                  │ 24.3 GB  ████ │ 92840 │ ████  45.1 %    │
-│ 📁 │ Users                    │ 18.7 GB  ███  │ 61200 │ ███   34.7 %    │
-│ 📁 │ Program Files            │  9.1 GB  ██   │ 22100 │ ██    16.9 %    │
-│ 📄 │ pagefile.sys             │ 12.0 GB  ██▌  │   —   │ ██▌   22.3 %    │
-└────┴──────────────────────────┴───────────────┴───────┴──────────────────┘
-```
+![Table view](docs/images/docs_table_view.png)
 
-> **Options dialog** — configure cache age, excluded folders, scan depth, default view, and display limits.
+**Options dialog** — configure cache age, excluded folders, scan depth, default view, and display limits.
+
+![Options dialog](docs/images/docs_settings_view.png)
 
 ---
 

@@ -4,8 +4,8 @@
         Title="Options"
         Width="460" SizeToContent="Height"
         ResizeMode="NoResize"
-        Background="{StaticResource BgBrush}"
-        Foreground="{StaticResource TextBrush}"
+        Background="{StaticResource BackgroundBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
         FontFamily="Segoe UI"
         FontSize="13"
         WindowStartupLocation="CenterOwner"
@@ -14,12 +14,12 @@
     <Window.Resources>
         <!-- TextBox style matching the dark theme -->
         <Style x:Key="SettingsTextBox" TargetType="TextBox">
-            <Setter Property="Background"      Value="{StaticResource Surface2Brush}"/>
-            <Setter Property="Foreground"      Value="{StaticResource TextBrush}"/>
-            <Setter Property="BorderBrush"     Value="{StaticResource BorderBrush_}"/>
+            <Setter Property="Background"      Value="{StaticResource CardBrush}"/>
+            <Setter Property="Foreground"      Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush"     Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding"         Value="8,5"/>
-            <Setter Property="CaretBrush"      Value="{StaticResource TextBrush}"/>
+            <Setter Property="CaretBrush"      Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="SelectionBrush"  Value="{StaticResource AccentBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -28,7 +28,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="5"
+                                CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
                             <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
                         </Border>
@@ -47,7 +47,7 @@
 
         <!-- RadioButton style matching the dark theme -->
         <Style TargetType="RadioButton">
-            <Setter Property="Foreground"   Value="{StaticResource TextBrush}"/>
+            <Setter Property="Foreground"   Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="Cursor"       Value="Hand"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
@@ -68,12 +68,12 @@
         <StackPanel Grid.Row="0">
             <TextBlock Text="CACHE"
                        FontSize="10" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextMutedBrush}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
                        Margin="0,0,0,8"/>
             <Border Background="{StaticResource SurfaceBrush}"
-                    BorderBrush="{StaticResource BorderBrush_}"
+                    BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="6"
+                    CornerRadius="12"
                     Padding="16,14">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
@@ -83,14 +83,14 @@
                                  TextAlignment="Center"/>
                         <TextBlock Text=" days"
                                    VerticalAlignment="Center"
-                                   Foreground="{StaticResource TextMutedBrush}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
                                    Margin="6,0,0,0"/>
                     </StackPanel>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="Max cache age"/>
                         <TextBlock Text="0 = never expire"
                                    FontSize="11"
-                                   Foreground="{StaticResource TextMutedBrush}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
                                    Margin="0,2,0,0"/>
                     </StackPanel>
                 </DockPanel>
@@ -101,12 +101,12 @@
         <StackPanel Grid.Row="2">
             <TextBlock Text="SCAN"
                        FontSize="10" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextMutedBrush}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
                        Margin="0,0,0,8"/>
             <Border Background="{StaticResource SurfaceBrush}"
-                    BorderBrush="{StaticResource BorderBrush_}"
+                    BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="6"
+                    CornerRadius="12"
                     Padding="16,14">
                 <StackPanel>
 
@@ -122,20 +122,20 @@
                             <TextBlock Text="Max scan depth"/>
                             <TextBlock Text="0 = unlimited (use built-in default)"
                                        FontSize="11"
-                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="0,2,0,0"/>
                         </StackPanel>
                     </DockPanel>
 
                     <!-- Separator -->
                     <Border Height="1"
-                            Background="{StaticResource BorderBrush_}"
+                            Background="{StaticResource BorderBrush}"
                             Margin="0,0,0,14"/>
 
                     <!-- Excluded folders header -->
                     <TextBlock Text="Excluded folders"
                                FontSize="12"
-                               Foreground="{StaticResource TextMutedBrush}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
                                Margin="0,0,0,8"/>
 
                     <!-- Excluded folders list -->
@@ -151,14 +151,14 @@
                                             CommandParameter="{Binding}"
                                             Padding="6,3"
                                             FontSize="11"
-                                            Foreground="{StaticResource TextMutedBrush}"
+                                            Foreground="{StaticResource TextSecondaryBrush}"
                                             ToolTip="Remove"/>
-                                    <Border Background="{StaticResource Surface2Brush}"
+                                    <Border Background="{StaticResource CardBrush}"
                                             CornerRadius="4"
                                             Padding="10,5"
                                             Margin="0,0,4,0">
                                         <TextBlock Text="{Binding}"
-                                                   Foreground="{StaticResource TextBrush}"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
                                                    FontSize="12"/>
                                     </Border>
                                 </DockPanel>
@@ -192,12 +192,12 @@
         <StackPanel Grid.Row="4">
             <TextBlock Text="DISPLAY"
                        FontSize="10" FontWeight="SemiBold"
-                       Foreground="{StaticResource TextMutedBrush}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
                        Margin="0,0,0,8"/>
             <Border Background="{StaticResource SurfaceBrush}"
-                    BorderBrush="{StaticResource BorderBrush_}"
+                    BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="1"
-                    CornerRadius="6"
+                    CornerRadius="12"
                     Padding="16,14">
                 <StackPanel>
 
@@ -217,7 +217,7 @@
 
                     <!-- Separator -->
                     <Border Height="1"
-                            Background="{StaticResource BorderBrush_}"
+                            Background="{StaticResource BorderBrush}"
                             Margin="0,0,0,14"/>
 
                     <!-- Max children per directory row -->
@@ -232,7 +232,7 @@
                             <TextBlock Text="Max items per directory"/>
                             <TextBlock Text="0 = show all"
                                        FontSize="11"
-                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="0,2,0,0"/>
                         </StackPanel>
                     </DockPanel>
