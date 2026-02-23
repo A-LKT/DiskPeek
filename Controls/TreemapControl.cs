@@ -41,6 +41,7 @@ public class TreemapControl : FrameworkElement
     // ── Events ───────────────────────────────────────────────────────────────
 
     public event Action<FileSystemNode>? NodeDoubleClicked;
+    public event Action? NavigateUpRequested;
 
     // ── Internal state ───────────────────────────────────────────────────────
 
@@ -397,6 +398,13 @@ public class TreemapControl : FrameworkElement
         var hit = FindHit(pos);
         if (hit.HasValue && hit.Value.Node.IsDirectory)
             NodeDoubleClicked?.Invoke(hit.Value.Node);
+    }
+
+    protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
+    {
+        base.OnMouseRightButtonUp(e);
+        NavigateUpRequested?.Invoke();
+        e.Handled = true;
     }
 
     private (Rect Rect, FileSystemNode Node)? FindHit(Point pos)

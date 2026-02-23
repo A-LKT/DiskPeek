@@ -31,6 +31,13 @@ public partial class MainWindow : Window
             if (node.IsDirectory) _ = _vm.NavigateToAsync(node);
         };
 
+        // Treemap right-click → navigate up one level
+        Treemap.NavigateUpRequested += () =>
+        {
+            if (_vm.NavigateUpCommand.CanExecute(null))
+                _vm.NavigateUpCommand.Execute(null);
+        };
+
         // After an in-place deeper scan the treemap's bound object reference doesn't
         // change, so force a full redraw when the ViewModel signals children changed.
         _vm.CurrentNodeChildrenChanged += (_, _) => Treemap.ForceRefresh();

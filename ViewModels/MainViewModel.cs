@@ -506,7 +506,8 @@ public class MainViewModel : INotifyPropertyChanged
         if (s.TotalSeconds < 90)  return "just now";
         if (s.TotalMinutes < 60)  return $"{(int)s.TotalMinutes} min ago";
         if (s.TotalHours   < 24)  return $"{(int)s.TotalHours}h ago";
-        return dt.ToString("yyyy-MM-dd HH:mm");
+        int days = (int)s.TotalDays;
+        return $"{dt:yyyy-MM-dd HH:mm}  ({days} day{(days == 1 ? "" : "s")} ago)";
     }
 
     private static string Truncate(string p, int max = 80)
